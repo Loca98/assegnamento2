@@ -1,6 +1,10 @@
 package _283095.venditavino;
 
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Main {
 
@@ -32,7 +36,7 @@ public class Main {
 		System.out.println("[3] Exit");
 	}
 
-	static void PrintLoginMenu() {
+	static Person PrintLoginMenu() {
 		String _email;
 		String _pwd;
 		for (int i = 0; i < 10; i++) {
@@ -46,27 +50,50 @@ public class Main {
 		System.out.println("Pwd :");
 		_pwd = keyboard.next();
 
-		// TODO
-		/*
-		 * Call Login Function with _email & _pwd
-		 */
+		try {
+			BufferedReader csvReader = new BufferedReader(new FileReader("User.csv"));
+			String row;
+			while ((row = csvReader.readLine()) != null) {
+
+				String[] data = row.split(",");
+
+				if (data[2].equals(_email) && data[3].equals(_pwd)) {
+					System.out.println("Login Effettuato correttamente");
+					csvReader.close();
+					return new Person(data[0], data[1], data[2], data[3], Boolean.valueOf(data[4]));
+				}
+			}
+
+			csvReader.close();
+			System.out.println("EMAIL O PASSWORD ERRATI.");
+			return null;
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	static void PrintRegisterMenu() {
-		String _name;
-		String _surname;
-		String _email;
-		String _pwd;
+	static Person PrintRegisterMenu() {
+		String _name = null;
+		String _surname = null;
+		String _email = null;
+		String _pwd = null;
+		boolean _root = false;
+
 		for (int i = 0; i < 10; i++) {
 			System.out.println("\n");
 		}
-		System.out.println("	MENU	");
 
-		System.out.println("Name :");
+		System.out.println("	MENU	");
+		keyboard.nextLine();
+		System.out.println("\n Name :");
 		_name = keyboard.next();
 
+		keyboard.nextLine(); // Si prende l'invio precedente
 		System.out.println("Surname :");
-		_surname = keyboard.next();
+		_surname = keyboard.nextLine();
 
 		System.out.println("E-Mail :");
 		_email = keyboard.next();
@@ -74,12 +101,45 @@ public class Main {
 		System.out.println("Pwd :");
 		_pwd = keyboard.next();
 
-		System.out.println(_name + _surname + _email + _pwd);
-		
-		// TODO
-		/*
-		 * Call Register Function with _email & _pwd
-		 */
+		System.out.println("Root :");
+		_root = keyboard.nextBoolean();
+
+		try {
+			BufferedReader csvReader = new BufferedReader(new FileReader("User.csv"));
+			String row;
+			while ((row = csvReader.readLine()) != null) {
+
+				String[] data = row.split(",");
+
+				if (data[2].equals(_email)) {
+					System.out.println("Email già utilizzata, Ritenta!!!");
+					return null;
+				}
+			}
+			csvReader.close();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			FileWriter fo = new FileWriter("User.csv", true);
+			fo.append(_name + "," + _surname + "," + _email + "," + _pwd + "," + _root + "\n");
+			fo.close();
+			// System.out.println("REGISTRAZIONE COMPLETATA: \n " + _name + "," + _surname
+			// +"," + _email + "," + _pwd);
+
+			if (_root) {
+				return new Impiegato(_name, _surname, _email, _pwd);
+			} else {
+				return new Utente(_name, _surname, _email, _pwd);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
