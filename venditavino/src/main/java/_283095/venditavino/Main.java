@@ -28,11 +28,11 @@ public class Main {
 
 		switch (_chose) {
 		case 1:
-			PrintLoginMenu();
+			loggedUser = PrintLoginMenu();
 			PrintHomeMenu();
 			break;
 		case 2:
-			PrintRegisterMenu();
+			loggedUser = PrintRegisterMenu();
 			PrintHomeMenu();
 			break;
 		case 3:
@@ -65,7 +65,11 @@ public class Main {
 				if (data[2].equals(_email) && data[3].equals(_pwd)) {
 					System.out.println("Login Effettuato correttamente");
 					csvReader.close();
-					return new Person(data[0], data[1], data[2], data[3], Boolean.valueOf(data[4]));
+					if (Boolean.valueOf(data[4])) {
+						return new Impiegato(data[0], data[1], data[2], data[3]);
+					} else if (!Boolean.valueOf(data[4])) {
+						return new Utente(data[0], data[1], data[2], data[3]);
+					}
 				}
 			}
 
@@ -118,6 +122,7 @@ public class Main {
 
 				if (data[2].equals(_email)) {
 					System.out.println("Email già utilizzata, Ritenta!!!");
+					csvReader.close();
 					return null;
 				}
 			}
@@ -151,7 +156,7 @@ public class Main {
 
 		// controllo che l'utente nel sistema non sia nullo
 		if (loggedUser == null) {
-			System.out.println("Login or Register User is null");
+			System.out.println("Login or Register failed. Retry.");
 			PrintMainMenu();
 		}
 
@@ -160,7 +165,7 @@ public class Main {
 			for (int i = 0; i < 10; i++) {
 				System.out.println("\n");
 			}
-			System.out.println("	MENU	");
+			System.out.println(loggedUser.name + " " + loggedUser.surname + " " + loggedUser.status);
 			System.out.println("[1] Search by name");
 			System.out.println("[2] Search by year");
 			System.out.println("[3] Logout");
@@ -193,11 +198,11 @@ public class Main {
 				break;
 			}
 
-		} else {
+		} else if (loggedUser instanceof Impiegato) {
 			for (int i = 0; i < 10; i++) {
 				System.out.println("\n");
 			}
-			System.out.println("	MENU	");
+			System.out.println(loggedUser.name + " " + loggedUser.surname);
 			System.out.println("[1] Add wines to magazine");
 			System.out.println("[2] Process wine requests");
 			System.out.println("[3] Logout");
