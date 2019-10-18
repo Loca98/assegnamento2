@@ -165,7 +165,7 @@ public class Main {
 			for (int i = 0; i < 10; i++) {
 				System.out.println("\n");
 			}
-			System.out.println(loggedUser.name + " " + loggedUser.surname + " " + loggedUser.status);
+			System.out.println(loggedUser.name + " " + loggedUser.surname);
 			System.out.println("[1] Search by name");
 			System.out.println("[2] Search by year");
 			System.out.println("[3] Logout");
@@ -203,7 +203,7 @@ public class Main {
 				System.out.println("\n");
 			}
 			System.out.println(loggedUser.name + " " + loggedUser.surname);
-			System.out.println("[1] Add wines to magazine");
+			System.out.println("[1] Add wine to magazine");
 			System.out.println("[2] Process wine requests");
 			System.out.println("[3] Logout");
 			System.out.println("[4] Exit");
