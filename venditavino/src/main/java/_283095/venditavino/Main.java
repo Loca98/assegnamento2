@@ -174,12 +174,10 @@ public class Main {
 			int _choose = keyboard.nextInt();
 			switch (_choose) {
 			case 1:
-				System.out.println("Name : ");
-				String _name = keyboard.next();
-				/*
-				 * call search by name function
-				 */
-				System.out.println("Searched name : " + _name);
+				//System.out.println("Name : ");
+				//String _name = keyboard.next();
+				SearchWine("lambrusco",2007);
+				//System.out.println("Searched name : " + _name);
 				break;
 			case 2:
 				System.out.println("Year : ");
@@ -226,6 +224,40 @@ public class Main {
 				break;
 			}
 		}
+	}
+	
+	public static void SearchWine(String _name, Integer _year) {
+		String _choose;
+		int _quantity;
+		if(_name !=null  && _year != null) {
+			BufferedReader csvReader;
+			try {
+				csvReader = new BufferedReader(new FileReader("Warehouse.csv"));
+				
+				String row;
+				while ((row = csvReader.readLine()) != null) {
+
+					String[] data = row.split(",");
+					if(data[0].equals(_name) && Integer.parseInt(data[1]) == _year) {
+						
+						System.out.println("VINO TROVATO : " + row + "\n Lo vuoi acquistare? ");						
+						System.out.println(" (s/n)");
+						_choose = keyboard.next();
+						if (_choose.equals("s")) {
+							System.out.println("Quanti ? MAX: " + data[4]);
+							_quantity = Integer.parseInt(keyboard.next());
+							//CALL BUYWINE()
+						}
+						else
+							System.out.println("Sarai reindirizzato al menu");
+					}
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 }
