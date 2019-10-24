@@ -166,36 +166,29 @@ public class Main {
 				System.out.println("\n");
 			}
 			System.out.println(loggedUser.name + " " + loggedUser.surname);
-			System.out.println("[1] Search by name");
-			System.out.println("[2] Search by year");
-			System.out.println("[3] Logout");
-			System.out.println("[4] Exit");
+			System.out.println("[1] Search and Buy wine");
+			System.out.println("[2] Logout");
+			System.out.println("[3] Exit");
 
 			int _choose = keyboard.nextInt();
 			switch (_choose) {
 			case 1:
-				//System.out.println("Name : ");
-				//String _name = keyboard.next();
-				SearchWine("lambrusco",2007);
-				//System.out.println("Searched name : " + _name);
+				System.out.println("Insert wine name : ");
+				String _name = keyboard.next();
+				System.out.println("Insert wine year : ");
+				int _year = keyboard.nextInt();
+				((Utente) loggedUser).SearchWine(_name, _year);
+				PrintHomeMenu();
 				break;
 			case 2:
-				System.out.println("Year : ");
-				int _year = keyboard.nextInt();
-				/*
-				 * call search by year function
-				 */
-				System.out.println("Searched year : " + _year);
-				break;
-			case 3:
 				loggedUser = null;
 				PrintMainMenu();
 				break;
-			case 4:
+			case 3:
 				System.exit(0);
 				break;
 			}
-
+			
 		} else if (loggedUser instanceof Impiegato) {
 			for (int i = 0; i < 10; i++) {
 				System.out.println("\n");
@@ -226,38 +219,4 @@ public class Main {
 		}
 	}
 	
-	public static void SearchWine(String _name, Integer _year) {
-		String _choose;
-		int _quantity;
-		if(_name !=null  && _year != null) {
-			BufferedReader csvReader;
-			try {
-				csvReader = new BufferedReader(new FileReader("Warehouse.csv"));
-				
-				String row;
-				while ((row = csvReader.readLine()) != null) {
-
-					String[] data = row.split(",");
-					if(data[0].equals(_name) && Integer.parseInt(data[1]) == _year) {
-						
-						System.out.println("VINO TROVATO : " + row + "\n Lo vuoi acquistare? ");						
-						System.out.println(" (s/n)");
-						_choose = keyboard.next();
-						if (_choose.equals("s")) {
-							System.out.println("Quanti ? MAX: " + data[4]);
-							_quantity = Integer.parseInt(keyboard.next());
-							//CALL BUYWINE()
-						}
-						else
-							System.out.println("Sarai reindirizzato al menu");
-					}
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-	}
-
 }
