@@ -215,11 +215,11 @@ public class Main {
 			switch (_choose) {
 			case 1:
 				((Impiegato) loggedUser).PrintAddWineMenu((Impiegato) loggedUser);
-				PrintMainMenu();
+				PrintHomeMenu();
 				break;
 			case 2:
 				((Impiegato) loggedUser).ProcessOrders();
-				PrintMainMenu();
+				PrintHomeMenu();
 				break;
 			case 3:
 				loggedUser = null;
