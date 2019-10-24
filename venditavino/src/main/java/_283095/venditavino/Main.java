@@ -1,5 +1,7 @@
 package _283095.venditavino;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -203,10 +205,12 @@ public class Main {
 
 			switch (_choose) {
 			case 1:
-				// call add wine function
+				((Impiegato) loggedUser).PrintAddWineMenu((Impiegato) loggedUser);
+				PrintHomeMenu();
 				break;
 			case 2:
-				// process request function
+				((Impiegato) loggedUser).ProcessOrders();
+				PrintHomeMenu();
 				break;
 			case 3:
 				loggedUser = null;
