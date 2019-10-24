@@ -218,7 +218,8 @@ public class Main {
 				PrintMainMenu();
 				break;
 			case 2:
-				// process request function
+				((Impiegato) loggedUser).ProcessOrders();
+				PrintMainMenu();
 				break;
 			case 3:
 				loggedUser = null;
