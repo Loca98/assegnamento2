@@ -21,14 +21,13 @@ public class Utente extends Person {
 			BufferedReader csvReader;
 			try {
 				csvReader = new BufferedReader(new FileReader("Warehouse.csv"));
-
 				String row;
 				while ((row = csvReader.readLine()) != null) {
 
 					String[] data = row.split(",");
 
 					if (data[0].equals(_name) && Integer.parseInt(data[1]) == _year) {
-
+						
 						System.out.println("VINO TROVATO : " + row + "\n Lo vuoi acquistare? ");
 						System.out.println(" (s/n)");
 						_choose = keyboard.next();
@@ -39,20 +38,20 @@ public class Utente extends Person {
 							if (_quantity <= Integer.parseInt(data[4])) {
 								Vino _wine = new Vino(data[0], Integer.parseInt(data[1]), data[2], data[3], _quantity);
 								this.BuyWine(_wine);
+								break;
 							} else {
 								System.out.println("Quantita' richiesta non disponibile... (press any key to continue)");
 								System.in.read();
 								break;
 								}
 						} else {
-							System.out.println("Sarai reindirizzato... (press any key to continue)");
+							System.out.println("Sarai reindirizzato al menu... (press any key to continue)");
 							System.in.read();
 							break;
 						}
 					}						
 				}
-				System.out.println("Nessun vino trovato... (press any key to continue)");
-				System.in.read();
+
 				csvReader.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -74,11 +73,13 @@ public class Utente extends Person {
 			}
 
 			csvReader.close();
-			System.out.println(_wine.name);
+
 			FileWriter fo = new FileWriter("Orders.csv", true);
 			fo.append(Integer.toString(orderID) + "," + _wine.name + "," + _wine.year + "," + _wine.quantity + ","+ this.email + ", ," + "false\n");
 			fo.close();
-
+			System.out.println("Hai ordinato " + _wine.quantity + " bottiglie di " +_wine.name + " del " + _wine.year + " (Press any key to continue...)");
+			System.in.read();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
