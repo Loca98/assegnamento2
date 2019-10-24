@@ -77,6 +77,10 @@ public class Utente extends Person {
 			FileWriter fo = new FileWriter("Orders.csv", true);
 			fo.append(Integer.toString(orderID) + "," + _wine.name + "," + _wine.year + "," + _wine.quantity + ","+ this.email + ", ," + "false\n");
 			fo.close();
+			
+			fo = new FileWriter("Log.csv", true);  
+			fo.append(java.time.LocalDate.now().toString() + ", " +  java.time.LocalTime.now() + ", " + this.email + ", " + "Buy " + _wine.quantity + " " + _wine.name + " " + _wine.year + "\n");
+			fo.close();
 			System.out.println("Hai ordinato " + _wine.quantity + " bottiglie di " +_wine.name + " del " + _wine.year + " (Press any key to continue...)");
 			System.in.read();
 			

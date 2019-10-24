@@ -1,7 +1,5 @@
 package _283095.venditavino;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,6 +10,7 @@ public class Main {
 
 	static Scanner keyboard = new Scanner(System.in);
 	static Person loggedUser = null;
+	static FileWriter fo;
 
 	public static void main(String[] args) {
 		PrintMainMenu();
@@ -70,6 +69,7 @@ public class Main {
 					if (Boolean.valueOf(data[4])) {
 						return new Impiegato(data[0], data[1], data[2], data[3]);
 					} else if (!Boolean.valueOf(data[4])) {
+						ActionLog(data[2], "Logged" );
 						return new Utente(data[0], data[1], data[2], data[3]);
 					}
 				}
@@ -141,7 +141,7 @@ public class Main {
 			fo.close();
 			// System.out.println("REGISTRAZIONE COMPLETATA: \n " + _name + "," + _surname
 			// +"," + _email + "," + _pwd);
-
+			ActionLog(_email, "Registered" );
 			if (_root) {
 				return new Impiegato(_name, _surname, _email, _pwd);
 			} else {
@@ -179,14 +179,17 @@ public class Main {
 				String _name = keyboard.next();
 				System.out.println("Insert wine year : ");
 				int _year = keyboard.nextInt();
-				((Utente) loggedUser).SearchWine(_name, _year);
+				ActionLog(loggedUser.email, "Search wine" );
+				((Utente) loggedUser).SearchWine(_name, _year);				
 				PrintHomeMenu();
 				break;
 			case 2:
+				ActionLog(loggedUser.email, "Log Out" );
 				loggedUser = null;
 				PrintMainMenu();
 				break;
 			case 3:
+				ActionLog(loggedUser.email, "Exit" );
 				System.exit(0);
 				break;
 			}
@@ -221,6 +224,17 @@ public class Main {
 				break;
 			}
 		}
+	}
+	
+	static void ActionLog(String _email, String _action ) {		
+		try {
+			fo = new FileWriter("Log.csv", true);  
+			fo.append(java.time.LocalDate.now().toString() + ", " +  java.time.LocalTime.now() + ", " + _email + ", " + _action + "\n");
+			fo.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 	
 }
