@@ -14,10 +14,4 @@ public class Person {
 		email = _email;
 		pwd = _pwd;
 	}
-
-	/* Metodo che stampa a console gli attributi */
-	public void PrintDetails() {
-
-		System.out.println("\n Nome:" + this.name + " Cognome: " + this.surname + " Email: " + this.email);
-	}
 }

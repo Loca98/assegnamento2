@@ -66,10 +66,10 @@ public class Main {
 				if (data[2].equals(_email) && data[3].equals(_pwd)) {
 					System.out.println("Login Effettuato correttamente");
 					csvReader.close();
+					ActionLog(data[2], "Logged");
 					if (Boolean.valueOf(data[4])) {
 						return new Impiegato(data[0], data[1], data[2], data[3]);
 					} else if (!Boolean.valueOf(data[4])) {
-						ActionLog(data[2], "Logged" );
 						return new Utente(data[0], data[1], data[2], data[3]);
 					}
 				}
@@ -77,6 +77,7 @@ public class Main {
 
 			csvReader.close();
 			System.out.println("EMAIL O PASSWORD ERRATI.");
+			ActionLog(_email, "Login Failed");
 			return null;
 
 		} catch (IOException e) {
@@ -139,8 +140,7 @@ public class Main {
 			FileWriter fo = new FileWriter("User.csv", true);
 			fo.append(_name + "," + _surname + "," + _email + "," + _pwd + "," + _root + "\n");
 			fo.close();
-			// System.out.println("REGISTRAZIONE COMPLETATA: \n " + _name + "," + _surname
-			// +"," + _email + "," + _pwd);
+
 			ActionLog(_email, "Registered" );
 			if (_root) {
 				return new Impiegato(_name, _surname, _email, _pwd);
@@ -184,7 +184,7 @@ public class Main {
 				PrintHomeMenu();
 				break;
 			case 2:
-				ActionLog(loggedUser.email, "Log Out" );
+				ActionLog(loggedUser.email, "Logout" );
 				loggedUser = null;
 				PrintMainMenu();
 				break;
@@ -209,20 +209,24 @@ public class Main {
 			switch (_choose) {
 			case 1:
 				((Impiegato) loggedUser).PrintAddWineMenu((Impiegato) loggedUser);
+				ActionLog(loggedUser.email, "Add wine" );
 				PrintHomeMenu();
 				break;
 			case 2:
 				((Impiegato) loggedUser).ProcessOrders();
+				ActionLog(loggedUser.email, "Process orders" );
 				PrintHomeMenu();
 				break;
 			case 3:
 				loggedUser = null;
-				PrintMainMenu();
+				ActionLog(loggedUser.email, "Logout" );
+				PrintMainMenu();				
 				break;
 			case 4:
 				System.exit(0);
+				ActionLog(loggedUser.email, "Exit" );
 				break;
-			}
+			}			
 		}
 	}
 	
