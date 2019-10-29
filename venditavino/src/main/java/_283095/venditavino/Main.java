@@ -1,3 +1,4 @@
+//Guogoasa Cosmin 28223 Lo Castro Mattia 283095
 package _283095.venditavino;
 
 import java.util.Scanner;
@@ -12,11 +13,12 @@ public class Main {
 	static Person loggedUser = null;
 	static FileWriter fo;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		PrintMainMenu();
 	}
 
-	static void PrintMainMenu() {
+	// Stampa il menu principale
+	static void PrintMainMenu() throws IOException {
 		for (int i = 0; i < 10; i++) {
 			System.out.println("\n");
 		}
@@ -39,9 +41,13 @@ public class Main {
 		case 3:
 			System.exit(0);
 			break;
+		default:
+			PrintMainMenu();
+			break;
 		}
 	}
 
+	// Menu per effettuare login
 	static Person PrintLoginMenu() {
 		String _email;
 		String _pwd;
@@ -87,7 +93,8 @@ public class Main {
 		return null;
 	}
 
-	static Person PrintRegisterMenu() {
+	// Menu per effettuare registrazione
+	static Person PrintRegisterMenu() throws IOException {
 		String _name = null;
 		String _surname = null;
 		String _email = null;
@@ -141,7 +148,7 @@ public class Main {
 			fo.append(_name + "," + _surname + "," + _email + "," + _pwd + "," + _root + "\n");
 			fo.close();
 
-			ActionLog(_email, "Registered" );
+			ActionLog(_email, "Registered");
 			if (_root) {
 				return new Impiegato(_name, _surname, _email, _pwd);
 			} else {
@@ -154,7 +161,7 @@ public class Main {
 		return null;
 	}
 
-	static void PrintHomeMenu() {
+	static void PrintHomeMenu() throws IOException {
 
 		// controllo che l'utente nel sistema non sia nullo
 		if (loggedUser == null) {
@@ -169,8 +176,9 @@ public class Main {
 			}
 			System.out.println(loggedUser.name + " " + loggedUser.surname);
 			System.out.println("[1] Search and Buy wine");
-			System.out.println("[2] Logout");
-			System.out.println("[3] Exit");
+			System.out.println("[2] ReadNotify");
+			System.out.println("[3] Logout");
+			System.out.println("[4] Exit");
 
 			int _choose = keyboard.nextInt();
 			switch (_choose) {
@@ -178,67 +186,98 @@ public class Main {
 				System.out.println("Insert wine name : ");
 				String _name = keyboard.next();
 				System.out.println("Insert wine year : ");
-				int _year = keyboard.nextInt();
-				ActionLog(loggedUser.email, "Search wine" );
-				((Utente) loggedUser).SearchWine(_name, _year);				
-				PrintHomeMenu();
+				int _year;
+				if (keyboard.hasNextInt()) {
+					_year = keyboard.nextInt();
+					ActionLog(loggedUser.email, "Search wine");
+					((Utente) loggedUser).SearchWine(_name, _year);
+					PrintHomeMenu();
+				} else {
+					System.out.println("Errore inserimento anno -->" + keyboard.next() + " Press any key to continue");
+					System.in.read();
+					PrintHomeMenu();
+				}
 				break;
 			case 2:
-				ActionLog(loggedUser.email, "Logout" );
+				((Utente) loggedUser).ReadNotification();
+				ActionLog(loggedUser.email, "Read Notify");
+				PrintHomeMenu();
+				break;
+			case 3:
+				ActionLog(loggedUser.email, "Logout");
 				loggedUser = null;
 				PrintMainMenu();
 				break;
-			case 3:
-				ActionLog(loggedUser.email, "Exit" );
+			case 4:
+				ActionLog(loggedUser.email, "Exit");
 				System.exit(0);
 				break;
+			default:
+				PrintHomeMenu();
+				break;
 			}
-			
+
 		} else if (loggedUser instanceof Impiegato) {
 			for (int i = 0; i < 10; i++) {
 				System.out.println("\n");
 			}
 			System.out.println(loggedUser.name + " " + loggedUser.surname);
 			System.out.println("[1] Add wine to magazine");
-			System.out.println("[2] Process wine requests");
-			System.out.println("[3] Logout");
-			System.out.println("[4] Exit");
+			System.out.println("[2] Process wine orders");
+			System.out.println("[3] Process wine request");
+			System.out.println("[4] Logout");
+			System.out.println("[5] Exit");
 
 			int _choose = keyboard.nextInt();
 
 			switch (_choose) {
 			case 1:
-				((Impiegato) loggedUser).PrintAddWineMenu((Impiegato) loggedUser);
-				ActionLog(loggedUser.email, "Add wine" );
+				try {
+					((Impiegato) loggedUser).PrintAddWineMenu((Impiegato) loggedUser);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				ActionLog(loggedUser.email, "Add wine");
 				PrintHomeMenu();
 				break;
 			case 2:
 				((Impiegato) loggedUser).ProcessOrders();
-				ActionLog(loggedUser.email, "Process orders" );
+				ActionLog(loggedUser.email, "Process orders");
 				PrintHomeMenu();
 				break;
 			case 3:
-				loggedUser = null;
-				ActionLog(loggedUser.email, "Logout" );
-				PrintMainMenu();				
+				((Impiegato) loggedUser).ProcessRequest();
+				ActionLog(loggedUser.email, "Process requests");
+				PrintHomeMenu();
 				break;
 			case 4:
-				System.exit(0);
-				ActionLog(loggedUser.email, "Exit" );
+				ActionLog(loggedUser.email, "Logout");
+				loggedUser = null;
+				PrintMainMenu();
 				break;
-			}			
+			case 5:
+				System.exit(0);
+				ActionLog(loggedUser.email, "Exit");
+				break;
+			default:
+				PrintHomeMenu();
+				break;
+			}
 		}
 	}
-	
-	static void ActionLog(String _email, String _action ) {		
+
+	// Aggiunge l'azione effettuatuata dall'utente al file di log
+	static void ActionLog(String _email, String _action) {
 		try {
-			fo = new FileWriter("Log.csv", true);  
-			fo.append(java.time.LocalDate.now().toString() + ", " +  java.time.LocalTime.now() + ", " + _email + ", " + _action + "\n");
+			fo = new FileWriter("Log.csv", true);
+			fo.append(java.time.LocalDate.now().toString() + ", " + java.time.LocalTime.now() + ", " + _email + ", "
+					+ _action + "\n");
 			fo.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
+		}
 	}
-	
+
 }

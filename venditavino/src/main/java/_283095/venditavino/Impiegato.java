@@ -1,9 +1,11 @@
 package _283095.venditavino;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,7 +18,8 @@ public class Impiegato extends Person {
 
 	static Scanner keyboard = new Scanner(System.in);
 
-	void PrintAddWineMenu(Impiegato loggedUser) {
+	// stampa menu per aggiungere vino
+	void PrintAddWineMenu(Impiegato loggedUser) throws IOException {
 		String _name;
 		int _year;
 		String _notes;
@@ -29,7 +32,8 @@ public class Impiegato extends Person {
 
 		System.out.println(loggedUser.name + " " + loggedUser.surname);
 		System.out.println("Name : ");
-		_name = keyboard.next();
+		_name = keyboard.next();	
+		keyboard.nextLine(); // Si prende l'invio precedente
 		System.out.println("Year : ");
 		_year = keyboard.nextInt();
 		System.out.println("Notes : ");
@@ -41,8 +45,10 @@ public class Impiegato extends Person {
 
 		Vino _newWine = new Vino(_name, _year, _notes, _vignite, _quantity);
 		AddWine(_newWine);
+
 	}
 
+	// viene aggiunto la quantità di vino al magazzino
 	static void AddWine(Vino _newWine) {
 
 		List<Vino> _warehouse = new ArrayList<Vino>();
@@ -65,8 +71,8 @@ public class Impiegato extends Person {
 
 		for (Vino _w : _warehouse) {
 			if (_newWine.name.equals(_w.name) && _newWine.year == _w.year) {
-				_w.quantity += _newWine.quantity;
 
+				_w.quantity += _newWine.quantity;
 				try {
 					FileWriter fo = new FileWriter("Warehouse.csv", false);
 
@@ -76,7 +82,7 @@ public class Impiegato extends Person {
 					}
 					fo.close();
 
-					System.out.println("Quantity updated.\n");
+					System.out.println("Quantity updated.");
 					return;
 
 				} catch (IOException e) {
@@ -124,7 +130,7 @@ public class Impiegato extends Person {
 			e.printStackTrace();
 		}
 
-		// load werehouse
+		// load warehouse
 		try {
 			BufferedReader csvReader = new BufferedReader(new FileReader("Warehouse.csv"));
 			String _row;
@@ -155,7 +161,7 @@ public class Impiegato extends Person {
 			}
 		}
 
-		// update files
+		// Aggiorna files
 		try {
 			FileWriter fo = new FileWriter("Warehouse.csv", false);
 
@@ -165,7 +171,8 @@ public class Impiegato extends Person {
 			}
 			fo.close();
 
-			System.out.println("Quantity updated.\n");
+			System.out.println("Quantity updated. Press any key to continue...\n");
+			System.in.read();
 
 		} catch (IOException e) {
 			System.out.println("Could not update warehouse.");
@@ -181,7 +188,44 @@ public class Impiegato extends Person {
 			}
 			fo.close();
 
-			System.out.println("Orders updated.\n");
+			System.out.println("Orders updated.Press any key to continue..."); 
+			System.in.read();
+
+		} catch (IOException e) {
+			System.out.println("Could not update quantity.");
+			e.printStackTrace();
+		}
+
+	}
+	
+	//processa le richieste delgi utenti che non hann trovato la quanitità richiesta
+	void ProcessRequest() {
+		String row;
+		File file = new File("Request.csv");
+		String stringFile = "";
+		try {
+			file.createNewFile();
+			BufferedReader csvReader = new BufferedReader(new FileReader(file));
+
+			while ((row = csvReader.readLine()) != null) {
+				String[] data = row.split(",");
+				if (data[6].equals("false")) {
+					AddWine(new Vino(data[1], Integer.parseInt(data[2]), "", "", Integer.parseInt(data[3])));
+					stringFile = stringFile.concat(data[0] + "," + data[1] + "," + data[2] + "," + data[3] + ","
+							+ data[4] + "," + data[5] + "," + "true\n");
+					System.out.println("Process order with id: " + data[0] + " Press any key to continue...");
+					System.in.read();
+				} else
+					stringFile = stringFile.concat(row);
+			}
+
+			csvReader.close();
+			
+			PrintWriter writer = new PrintWriter(file);
+			writer.print(stringFile);
+			writer.close();
+			
+			
 
 		} catch (IOException e) {
 			System.out.println("Could not update quantity.");
